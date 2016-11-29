@@ -24,7 +24,7 @@ public class Main {
     				System.out.println("opcao Inválida, digite novamente.\n");
     			}
     		}while (opcao < 0 || opcao > 5);
-			
+			leia.nextLine();
 			switch (opcao) {
 				case 0:
 					System.out.println("\n ************  PROGRAMA ENCERRADO  ************** \n");

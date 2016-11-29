@@ -34,12 +34,12 @@ public class Estacionamento {
     		do {
     			//Main.leia.nextLine();
     			System.out.print("Digite o código do veÌculo que deseja dar saída ( FIM para encerrar ): ");
-    			codEstChave = Main.leia.nextLine();
+    			codEstChave = Main.leia.next();
     			if (codEstChave.equals("FIM")) {
     				break;
     			}
     			posicaoRegistro = pesquisarVeiculoPorCodigo(codEstChave);
-    			Main.leia.nextLine();
+//    			Main.leia.nextLine();
    				if (posicaoRegistro == -1) {
    					System.out.println("VeÌculo não cadastrado no arquivo, digite outro código\n");
    				}
@@ -71,12 +71,14 @@ public class Estacionamento {
     			}
     		}while(! horaValida);
     		
-    		valorPago = calcularValorPago(horaSaida);
+    		valorPago = calcularValorPago(horaEntrada, horaSaida, categoriaVeiculo);
     		System.out.print("Valor a pagar: " + valorPago);
     		do {
     			System.out.print("\nConfirma a saída e pagamento do veículo (S/N) ? ");
     			confirmacao = Main.leia.next().charAt(0);
     			if (confirmacao == 'S') {
+    				desativarVeiculoEstacionamento(posicaoRegistro);
+    				tipoOperacao = 'S';
     				salvarVeiculo();
     			}
     		}while (confirmacao != 'S' && confirmacao != 'N');
@@ -88,16 +90,16 @@ public class Estacionamento {
 	public void excluir(){
    	 
     	do {
-    		System.out.println(" ***************  EXCLUSÃO DE VEÍCULOS  ***************** ");
+    		System.out.println("\n ***************  EXCLUSÃO DE VEÍCULOS  ***************** ");
     		do {
     			//Main.leia.nextLine();
     			System.out.print("Digite o código do veÌculo que deseja excluir ( FIM para encerrar ): ");
-    			codEstChave = Main.leia.nextLine();
+    			codEstChave = Main.leia.next();
     			if (codEstChave.equals("FIM")) {
     				break;
     			}
     			posicaoRegistro = pesquisarVeiculoPorCodigo(codEstChave);
-    			Main.leia.nextLine();
+//    			Main.leia.nextLine();
    				if (posicaoRegistro == -1) {
    					System.out.println("VeÌculo não cadastrado no arquivo, digite outro código\n");
    				}
@@ -120,7 +122,7 @@ public class Estacionamento {
 	    		confirmacao = Main.leia.next().charAt(0);
 	    		if (confirmacao == 'S') {
 	    			desativarVeiculoEstacionamento(posicaoRegistro);
-	    			System.out.print("Veículo excluído.");
+	    			System.out.println("Veículo excluído.\n");
 	    		 }
 	    	}while (confirmacao != 'S' && confirmacao != 'N');
 
@@ -132,27 +134,12 @@ public class Estacionamento {
 	}
 
 	// Metodo de consulta de veículos
-
-	/*
-	 *O programa de consulta deverá apresentar na tela os dados dos veículos com as seguintes opções:
-		1 - Exibir todos os registros
-		2 - Exibir somente os veículos que ainda não saíram do estacionamento
-		3 - Exibir os registros cadastrados em uma Data informada
-
-	Exemplo de layout da consulta:
-
-	Placa          OP  Desc. veículo         Desc.Marca      Categoria     Data            Hr Entr    Hr Saída     Vlr Pago
-	------------  --- ---------------------  --------------  ------------  --------------  ---------  -----------  ----------
-	ABC1111   		E   Palio cinza             Fiat	      PN	         01/03/2014     10:20	
-	XYZ2222   		S   Gol vermelho           Volkswagen     PN	         12/02/2014     12:15       13:15       7,00	
-
-	 */
 	public static void consultar (){
 		
 		byte escolha = -1;
 		boolean encontrouAlgumRegistro = false;
 		
-		System.out.println("****************** PROGRAM DE CONSULTA ******************");
+		System.out.println("****************** CONSULTA  DE VEÍCULOS ******************");
 
 		do {
 			System.out.println("Escolha a opção que deseja realizar, digite 0 para sair.");
@@ -513,9 +500,10 @@ public class Estacionamento {
 		System.out.println("-------\t--  ---------------  ---------    ----  ----------  ----------   ---------   ----------");
 	}
 	
-	public static long pesquisaVeiculo (){
-		return 00000;
-	}
+	// Que metodo é esse?!
+//	public static long pesquisaVeiculo (){
+//		return 00000;
+//	}
 	
 	// Método para pesquisar veículo através de seu código
 	public long pesquisarVeiculoPorCodigo(String codEstPesquisa) {	
@@ -537,7 +525,7 @@ public class Estacionamento {
 				horaSaida    = arquivo.readUTF();
 				valorPago    = arquivo.readFloat();
 
-				if ( codEstPesquisa.equals(codEst) && ativo == 'S') {
+				if ( codEstPesquisa.equalsIgnoreCase(codEst) && ativo == 'S') {
 					arquivo.close();
 					return posicaoCursorArquivo;
 				}
@@ -551,9 +539,58 @@ public class Estacionamento {
 		}
 	}
 
-
-	public static int calcularValorPago(String horaSaid){
-		return 0;
+	
+	public static float calcularValorPago(String horaEntra,String horaSai,String catVeiculo){
+		
+		float tempoPermanencia;
+		float valorAPagar = 0;
+		byte HoraSaida,HoraEntrada;
+		byte MinSaida,MinEntrada;
+		String HS,HE;//HS-hora saida  HE-hora entrada
+		String MS,ME;//MS-minuto saida  ME-minuto entrada
+		
+		HE = horaEntra.substring(0,2);
+		ME = horaEntra.substring(3,4);
+		
+		HS = horaSai.substring(0,2);
+		MS = horaSai.substring(3,4);
+		
+		HoraSaida = Byte.parseByte(HS);
+		HoraEntrada = Byte.parseByte(HE);
+		MinSaida = Byte.parseByte(MS);
+		MinEntrada = Byte.parseByte(ME);
+		
+		//variavel criada para facilitar os calculos
+		tempoPermanencia = (HoraSaida - HoraEntrada+(MinSaida - MinEntrada)/60);
+		
+		//calculos matematicos
+		if(HoraEntrada <= 18){
+			if(catVeiculo.equals("PI")){
+				valorAPagar = (float) (tempoPermanencia * 8.20);
+			}else if(catVeiculo.equals("GI")){
+				valorAPagar = (float) (tempoPermanencia * 10.00);
+			}else if(catVeiculo.equals("PN")){
+				valorAPagar = (float) (tempoPermanencia * 7.00);
+			}else{
+				valorAPagar = (float) (tempoPermanencia * 9.00);
+			}
+		}
+		
+		if(HoraEntrada > 18){
+			if(catVeiculo.equals("PI")){
+				valorAPagar = (float) (tempoPermanencia * 6.50);
+			}else if(catVeiculo.equals("GI")){
+				valorAPagar = (float) (tempoPermanencia * 8.00);
+			}else if(catVeiculo.equals("PN")){
+				valorAPagar = (float) (tempoPermanencia * 6.00);
+			}else{
+				valorAPagar = (float) (tempoPermanencia * 7.50);
+			}
+		}
+		
+		
+			
+		return valorAPagar;
 	}
 	
 
