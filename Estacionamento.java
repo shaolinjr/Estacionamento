@@ -15,25 +15,25 @@ public class Estacionamento {
 	static String		horaEntrada;
 	static String		horaSaida;
 	static float		valorPago;
-	boolean placaValida; //Variável nova
-	int marcaValida; //Variável nova
-	char confirmacao; //Variável nova
+	boolean placaValida; //VariÃ¡vel nova
+	int marcaValida; //VariÃ¡vel nova
+	char confirmacao; //VariÃ¡vel nova
 	String codEstChave; //Variavel nova
-	long posicaoRegistro = 0; //Variavel nova
+	static long posicaoRegistro = 0; //Variavel nova
 
 
 	static RandomAccessFile arquivo;
 
-	/******************** MÉTODOS PRINCIPAIS ********************/
+	/******************** MÃ‰TODOS PRINCIPAIS ********************/
 
 
-	public void saidaVeiculo() { //Alteração
+	public void saidaVeiculo() { //AlteraÃ§Ã£o
 		
 		do {
-    		System.out.println(" ***************  SAÍDA DE VEÍCULOS  ***************** ");
+    		System.out.println(" ***************  SAÃ�DA DE VEÃ�CULOS  ***************** ");
     		do {
     			//Main.leia.nextLine();
-    			System.out.print("Digite o código do veÌculo que deseja dar saída ( FIM para encerrar ): ");
+    			System.out.print("Digite o cÃ³digo do veÃŒculo que deseja dar saÃ­da ( FIM para encerrar ): ");
     			codEstChave = Main.leia.next();
     			if (codEstChave.equals("FIM")) {
     				break;
@@ -41,7 +41,7 @@ public class Estacionamento {
     			posicaoRegistro = pesquisarVeiculoPorCodigo(codEstChave);
 //    			Main.leia.nextLine();
    				if (posicaoRegistro == -1) {
-   					System.out.println("VeÌculo não cadastrado no arquivo, digite outro código\n");
+   					System.out.println("VeÃŒculo nÃ£o cadastrado no arquivo, digite outro cÃ³digo\n");
    				}
    				
     		}while (posicaoRegistro == -1);
@@ -58,23 +58,23 @@ public class Estacionamento {
     		System.out.println("Hora de entrada: " + horaEntrada);
     		System.out.println();
     		
-    		System.out.print("Digite a data de operação......................:");
+    		System.out.print("Digite a data de operaÃ§Ã£o......................:");
     		dataOperacao = Main.leia.next();
 
     		boolean horaValida;
     		do{
-    			System.out.print("Digite a hora de saída.......................:");
+    			System.out.print("Digite a hora de saÃ­da.......................:");
     			horaSaida = Main.leia.next();
     			horaValida = consistirHora(horaSaida);
     			if (! horaValida){
-    				System.out.println("Hora inválida. ");
+    				System.out.println("Hora invÃ¡lida. ");
     			}
     		}while(! horaValida);
     		
     		valorPago = calcularValorPago(horaEntrada, horaSaida, categoriaVeiculo);
     		System.out.print("Valor a pagar: " + valorPago);
     		do {
-    			System.out.print("\nConfirma a saída e pagamento do veículo (S/N) ? ");
+    			System.out.print("\nConfirma a saÃ­da e pagamento do veÃ­culo (S/N) ? ");
     			confirmacao = Main.leia.next().charAt(0);
     			if (confirmacao == 'S') {
     				desativarVeiculoEstacionamento(posicaoRegistro);
@@ -90,10 +90,10 @@ public class Estacionamento {
 	public void excluir(){
    	 
     	do {
-    		System.out.println("\n ***************  EXCLUSÃO DE VEÍCULOS  ***************** ");
+    		System.out.println("\n ***************  EXCLUSÃƒO DE VEÃ�CULOS  ***************** ");
     		do {
     			//Main.leia.nextLine();
-    			System.out.print("Digite o código do veÌculo que deseja excluir ( FIM para encerrar ): ");
+    			System.out.print("Digite o cÃ³digo do veÃŒculo que deseja excluir ( FIM para encerrar ): ");
     			codEstChave = Main.leia.next();
     			if (codEstChave.equals("FIM")) {
     				break;
@@ -101,7 +101,7 @@ public class Estacionamento {
     			posicaoRegistro = pesquisarVeiculoPorCodigo(codEstChave);
 //    			Main.leia.nextLine();
    				if (posicaoRegistro == -1) {
-   					System.out.println("VeÌculo não cadastrado no arquivo, digite outro código\n");
+   					System.out.println("VeÃŒculo nÃ£o cadastrado no arquivo, digite outro cÃ³digo\n");
    				}
    				
     		}while (posicaoRegistro == -1);
@@ -118,11 +118,11 @@ public class Estacionamento {
     		System.out.println();
     		
 	    	do {
-	    		System.out.print("\nConfirma a exclusão deste veículo (S/N) ? ");
+	    		System.out.print("\nConfirma a exclusÃ£o deste veÃ­culo (S/N) ? ");
 	    		confirmacao = Main.leia.next().charAt(0);
 	    		if (confirmacao == 'S') {
 	    			desativarVeiculoEstacionamento(posicaoRegistro);
-	    			System.out.println("Veículo excluído.\n");
+	    			System.out.println("VeÃ­culo excluÃ­do.\n");
 	    		 }
 	    	}while (confirmacao != 'S' && confirmacao != 'N');
 
@@ -130,29 +130,173 @@ public class Estacionamento {
 	}
 
 	public void relatorioFaturamento (){
-
+		byte opcao;
+		String placaDigitada;
+		String dataDigitada;
+		boolean encontrouRegistros = false;
+		do {
+			System.out.println("\n****************** RELATÓRIO DE VEÍCULOS ****************** ");
+			System.out.println("[0] Sair");
+			System.out.println("[1] Relatório por veículo");
+			System.out.println("[2] Relatório por data");
+			System.out.println("[3] Relatório geral");
+			
+			System.out.print("Digite a opção desejada: ");
+			
+			opcao = Main.leia.nextByte();
+			if (opcao == 0){
+				System.out.println("Saindo...");
+				break;
+			}
+			else if(opcao < 0 || opcao > 3){
+				System.out.println("Opção inválida! Digite novamente.");
+			}
+			
+		}while (opcao < 0 || opcao > 3);
+		
+		switch (opcao){
+			case 1: 
+				do {
+					System.out.print("Digite a placa: ");
+					placaDigitada = Main.leia.next();
+					
+					if (!consistirPlaca(placa)){
+						System.out.println("Placa inválida! Digite novamente.");
+					}
+				}while(!consistirPlaca(placa));
+				
+				try {
+					arquivo = new RandomAccessFile("ESTACIONAMENTO.DAT", "rw");
+					
+					while (true) {
+						posicaoRegistro  = arquivo.getFilePointer();	// posiÃ§Ã£o do inÃ­cio do registro no arquivo
+						ativo		 = arquivo.readChar();
+						codEst       = arquivo.readUTF();
+						placa        = arquivo.readUTF();
+						tipoOperacao = arquivo.readChar();
+						codMarca     = arquivo.readUTF();
+						modeloCor    = arquivo.readUTF();
+						categoriaVeiculo = arquivo.readUTF();
+						dataOperacao = arquivo.readUTF();
+						horaEntrada  = arquivo.readUTF();
+						horaSaida    = arquivo.readUTF();
+						valorPago    = arquivo.readFloat();
+						
+						if (ativo == 'S' && tipoOperacao == 'S' && placaDigitada.equals(placa)){
+							relatorioHeader();
+							System.out.println(placa+" " + tipoOperacao +"  " +" "+ 
+									modeloCor +"\t     "+ gerarDescMarca(codMarca) +"\t  " +categoriaVeiculo +"\t"+ 
+									dataOperacao +"     "+ horaEntrada +"     "+ horaSaida +"\t\t"+ valorPago);
+							
+						}
+					}
+					
+				}catch (EOFException e){
+					System.out.println("Placa não encontrada nos registros.");
+				}catch (IOException e){
+					System.out.println("Erro ao tentar abrir o programa. Saindo...");
+					System.exit(0);
+				}
+				break;
+			case 2:
+			
+				System.out.print("Digite a data de operação: ");
+				dataDigitada = Main.leia.next();
+	
+				try {
+					arquivo = new RandomAccessFile("ESTACIONAMENTO.DAT", "rw");
+					
+					while (true) {
+						posicaoRegistro  = arquivo.getFilePointer();	// posiÃ§Ã£o do inÃ­cio do registro no arquivo
+						ativo		 = arquivo.readChar();
+						codEst       = arquivo.readUTF();
+						placa        = arquivo.readUTF();
+						tipoOperacao = arquivo.readChar();
+						codMarca     = arquivo.readUTF();
+						modeloCor    = arquivo.readUTF();
+						categoriaVeiculo = arquivo.readUTF();
+						dataOperacao = arquivo.readUTF();
+						horaEntrada  = arquivo.readUTF();
+						horaSaida    = arquivo.readUTF();
+						valorPago    = arquivo.readFloat();
+						
+						if (ativo == 'S' && tipoOperacao == 'S' && dataDigitada.equals(dataOperacao)){
+							relatorioHeader();
+							System.out.println(placa+" " + tipoOperacao +"  " +" "+ 
+									modeloCor +"\t     "+ gerarDescMarca(codMarca) +"\t  " +categoriaVeiculo +"\t"+ 
+									dataOperacao +"     "+ horaEntrada +"     "+ horaSaida +"\t\t"+ valorPago);
+							break;
+						}
+					}
+					
+				}catch (EOFException e){
+					System.out.println("Placa não encontrada nos registros.");
+				}catch (IOException e){
+					System.out.println("Erro ao tentar abrir o programa. Saindo...");
+					System.exit(0);
+				}
+				break;
+			case 3:
+				relatorioHeader();
+				try {
+					arquivo = new RandomAccessFile("ESTACIONAMENTO.DAT", "rw");
+					
+					while (true) {
+						posicaoRegistro  = arquivo.getFilePointer();	// posiÃ§Ã£o do inÃ­cio do registro no arquivo
+						ativo		 = arquivo.readChar();
+						codEst       = arquivo.readUTF();
+						placa        = arquivo.readUTF();
+						tipoOperacao = arquivo.readChar();
+						codMarca     = arquivo.readUTF();
+						modeloCor    = arquivo.readUTF();
+						categoriaVeiculo = arquivo.readUTF();
+						dataOperacao = arquivo.readUTF();
+						horaEntrada  = arquivo.readUTF();
+						horaSaida    = arquivo.readUTF();
+						valorPago    = arquivo.readFloat();
+						
+						if (ativo == 'S' && tipoOperacao == 'S'){
+							encontrouRegistros = true;
+							
+							System.out.println(placa+" " + tipoOperacao +"  " +" "+ 
+									modeloCor +"\t     "+ gerarDescMarca(codMarca) +"\t  " +categoriaVeiculo +"\t"+ 
+									dataOperacao +"     "+ horaEntrada +"     "+ horaSaida +"\t\t"+ valorPago);
+							
+						}
+					}
+					
+				}catch (EOFException e){
+					if (!encontrouRegistros){
+						System.out.println("Registros não encontrados.");
+					}
+				}catch (IOException e){
+					System.out.println("Erro ao tentar abrir o programa. Saindo...");
+					System.exit(0);
+				}
+				break;
+		}
 	}
 
-	// Metodo de consulta de veículos
+	// Metodo de consulta de veÃ­culos
 	public static void consultar (){
 		
 		byte escolha = -1;
 		boolean encontrouAlgumRegistro = false;
 		
-		System.out.println("****************** CONSULTA  DE VEÍCULOS ******************");
+		System.out.println("****************** CONSULTA  DE VEÃ�CULOS ******************");
 
 		do {
-			System.out.println("Escolha a opção que deseja realizar, digite 0 para sair.");
+			System.out.println("Escolha a opÃ§Ã£o que deseja realizar, digite 0 para sair.");
 			System.out.println("\n[ 1 ] Exibir todos os registros");
-			System.out.println("[ 2 ] Exibir somente os veículos que ainda não saíram do estacionamento");
-			System.out.println("[ 3 ] Exibir somente os veículos cadastrados em uma data específica");
+			System.out.println("[ 2 ] Exibir somente os veÃ­culos que ainda nÃ£o saÃ­ram do estacionamento");
+			System.out.println("[ 3 ] Exibir somente os veÃ­culos cadastrados em uma data especÃ­fica");
 			System.out.print("\nO que deseja fazer?: ");
 			escolha = Main.leia.nextByte();
 
 			if (escolha < 0){
-				System.out.println("Opção Inválida. Digite novamente.");
+				System.out.println("OpÃ§Ã£o InvÃ¡lida. Digite novamente.");
 			}else if (escolha == 0){
-				System.out.println("Até mais...");
+				System.out.println("AtÃ© mais...");
 				break;
 			}
 		}while(escolha < 0);
@@ -194,7 +338,7 @@ public class Estacionamento {
 	
 				}catch (EOFException e){
 					if (!encontrouAlgumRegistro){
-						System.out.println("Não foi encontrado nenhum registro.");
+						System.out.println("NÃ£o foi encontrado nenhum registro.");
 					}
 				}catch (IOException e){
 					System.out.println("Ocorreu um erro ao tentar abrir o arquivo. Finalizando o programa.");
@@ -240,7 +384,7 @@ public class Estacionamento {
 	
 				}catch (EOFException e){
 					if (!encontrouAlgumRegistro){
-						System.out.println("Não foi encontrado nenhum registro.");
+						System.out.println("NÃ£o foi encontrado nenhum registro.");
 					}
 				}catch (IOException e){
 					System.out.println("Ocorreu um erro ao tentar abrir o arquivo. Finalizando o programa.");
@@ -252,10 +396,10 @@ public class Estacionamento {
 				String data = "";
 	
 	
-				System.out.print("Digite a data para gerar relatório: ");
+				System.out.print("Digite a data para gerar relatÃ³rio: ");
 				data = Main.leia.next();
 				if (!consistirData(data)){
-					System.out.println("Data inválida! Formato: dd/mm/yyy");
+					System.out.println("Data invÃ¡lida! Formato: dd/mm/yyy");
 					break;
 				}
 	
@@ -294,7 +438,7 @@ public class Estacionamento {
 
 			}catch (EOFException e){
 				if (!encontrouAlgumRegistro){
-					System.out.println("Não foi encontrado nenhum registro.");
+					System.out.println("NÃ£o foi encontrado nenhum registro.");
 				}
 			}catch (IOException e){
 				System.out.println("Ocorreu um erro ao tentar abrir o arquivo. Finalizando o programa.");
@@ -309,8 +453,8 @@ public class Estacionamento {
 
 	
 
-	public void entradaVeiculo() { //Inclusão
-		//gerar código sequencial
+	public void entradaVeiculo() { //InclusÃ£o
+		//gerar cÃ³digo sequencial
 		String maiorCodEst = "000000";
 		try{
 			RandomAccessFile arquivo = new RandomAccessFile("ESTACIONAMENTO.DAT", "rw");
@@ -337,10 +481,10 @@ public class Estacionamento {
 				codEst = "0" + codEst;
 			}
 		}catch (IOException e) { 
-			System.out.println("Erro na abertura do arquivo  -  programa será finalizado");
+			System.out.println("Erro na abertura do arquivo  -  programa serÃ¡ finalizado");
 			System.exit(0);
 		}
-		System.out.println("Código de Estacionamento: " + codEst);
+		System.out.println("CÃ³digo de Estacionamento: " + codEst);
 		ativo = 'S';
 
 		do {
@@ -348,20 +492,20 @@ public class Estacionamento {
 			placa = Main.leia.next();
 			placaValida = consistirPlaca(placa);
 			if (! placaValida){
-				System.out.println("A placa digitada é inválida.");
+				System.out.println("A placa digitada Ã© invÃ¡lida.");
 			}
 		} while(! placaValida);
 
 		tipoOperacao = 'E';
-		System.out.println("Tipo de operação......................: E - Entrada");
+		System.out.println("Tipo de operaÃ§Ã£o...................: E - Entrada");
 
 		System.out.println("Marcas: BM, VW, FO,MB,CV, FI, AU, TO, HO, HY");
 		do {
-			System.out.println("Digite o código da marca..............:");
+			System.out.print("Digite o cÃ³digo da marca..............:");
 			codMarca = Main.leia.next();
 			marcaValida = pesquisarMarcaVeiculo(codMarca);
 			if (marcaValida < 0){
-				System.out.println("Marca inválida. ");
+				System.out.println("Marca invÃ¡lida. ");
 			}
 		} while(marcaValida < 0);
 
@@ -371,25 +515,25 @@ public class Estacionamento {
 			System.out.print("Digite o modelo/cor......................:");
 			modeloCor = Main.leia.nextLine();
 			if(modeloCor.length()<10){
-				System.out.println("O campo deverá ter no mínimo 10 caracteres.");
+				System.out.println("O campo deverÃ¡ ter no mÃ­nimo 10 caracteres.");
 			}
 		}while(modeloCor.length()<10);
 
 		do {
 			System.out.println("Categorias: "
-					+ "\nGI – Grande e Importado"
-					+ "\nPI – Pequeno e Importado"
-					+ "\nGN – Grande e Nacional"
-					+ "\nPN – Pequeno e Nacional");
+					+ "\nGI â€“ Grande e Importado"
+					+ "\nPI â€“ Pequeno e Importado"
+					+ "\nGN â€“ Grande e Nacional"
+					+ "\nPN â€“ Pequeno e Nacional");
 			System.out.print("Digite a categoria.........................:");
 			categoriaVeiculo = Main.leia.nextLine();
 			System.out.println(consistirCategoria(categoriaVeiculo));
 			if (consistirCategoria(categoriaVeiculo).equalsIgnoreCase("ERRO")){
-				System.out.println("Categoria inválida.");
+				System.out.println("Categoria invÃ¡lida.");
 			}
 		} while (consistirCategoria(categoriaVeiculo).equalsIgnoreCase("ERRO"));
 
-		System.out.print("Digite a data de operação......................:");
+		System.out.print("Digite a data de operaÃ§Ã£o......................:");
 		dataOperacao = Main.leia.next();
 
 		boolean horaValida;
@@ -399,7 +543,7 @@ public class Estacionamento {
 			horaValida = consistirHora(horaEntrada);
 			
 			if (! horaValida){
-				System.out.println("Hora inválida. ");
+				System.out.println("Hora invÃ¡lida. ");
 			}
 		}while(! horaValida);
 
@@ -408,7 +552,7 @@ public class Estacionamento {
 		valorPago = 0;
 
 		do {
-			System.out.print("\nConfirma a gravação dos dados (S/N) ? ");
+			System.out.print("\nConfirma a gravaÃ§Ã£o dos dados (S/N) ? ");
 			confirmacao = Main.leia.next().charAt(0);
 			if (confirmacao == 'S') {
 				salvarVeiculo();
@@ -418,9 +562,9 @@ public class Estacionamento {
 	}
 
 
-	/******************** MÉTODOS AUXILIARES ********************/
+	/******************** MÃ‰TODOS AUXILIARES ********************/
 	
-	// Método para gerar descrição(nome) da marca
+	// MÃ©todo para gerar descriÃ§Ã£o(nome) da marca
 	public static String gerarDescMarca (String codMarca){
 		String descricao = "";
 		for (byte j = 0; j < Main.descricaoMarca.length;j++){
@@ -432,7 +576,7 @@ public class Estacionamento {
 		return descricao;
 	}
 
-	//Método de pesquisa de marca
+	//MÃ©todo de pesquisa de marca
 	public static int pesquisarMarcaVeiculo (String codMarcaDigitado){
 		boolean encontrou = false;
 		int z;
@@ -450,9 +594,9 @@ public class Estacionamento {
 
 	}
 
-	// Método para deletar Registro de Veículo
+	// MÃ©todo para deletar Registro de VeÃ­culo
 	public void desativarVeiculoEstacionamento(long posicao)	{    
-		// método para alterar o valor do campo ATIVO para N, tornando assim o registro excluído
+		// mÃ©todo para alterar o valor do campo ATIVO para N, tornando assim o registro excluÃ­do
 		try {
 			RandomAccessFile arquivo = new RandomAccessFile("ESTACIONAMENTO.DAT", "rw");
 
@@ -460,15 +604,15 @@ public class Estacionamento {
 			arquivo.writeChar('N');   // desativar o registro antigo
 			arquivo.close();
 		}catch (IOException e) { 
-			System.out.println("Erro na abertura do arquivo  -  programa será finalizado");
+			System.out.println("Erro na abertura do arquivo  -  programa serÃ¡ finalizado");
 			System.exit(0);
 		}
 
 	}
 
-	// Método para salvar Registro de Veículo
+	// MÃ©todo para salvar Registro de VeÃ­culo
 	public void salvarVeiculo() {	
-		// método para incluir um novo registro no final do arquivo em disco
+		// mÃ©todo para incluir um novo registro no final do arquivo em disco
 		try {
 			RandomAccessFile arquivo = new RandomAccessFile("ESTACIONAMENTO.DAT", "rw");
 
@@ -488,31 +632,31 @@ public class Estacionamento {
 			arquivo.close();
 			System.out.println("Dados gravados com sucesso !\n");
 		}catch (IOException e) { 
-			System.out.println("Erro na abertura do arquivo  -  programa será finalizado");
+			System.out.println("Erro na abertura do arquivo  -  programa serÃ¡ finalizado");
 			System.exit(0);
 		}
 	}
 
-	// Método para gerar cabeçalho de tabela de pesquisa
+	// MÃ©todo para gerar cabeÃ§alho de tabela de pesquisa
 	public static void relatorioHeader () {
-		// Estrutura do relatório de pesquisa
-		System.out.println("Placa\tOP  Veículo\t     Marca        Cat.  Data  \t    Hr.Entrada   Hr.Saída    Valor Pago");
+		// Estrutura do relatÃ³rio de pesquisa
+		System.out.println("Placa\tOP  VeÃ­culo\t     Marca        Cat.  Data  \t    Hr.Entrada   Hr.SaÃ­da    Valor Pago");
 		System.out.println("-------\t--  ---------------  ---------    ----  ----------  ----------   ---------   ----------");
 	}
 	
-	// Que metodo é esse?!
+	// Que metodo Ã© esse?!
 //	public static long pesquisaVeiculo (){
 //		return 00000;
 //	}
 	
-	// Método para pesquisar veículo através de seu código
+	// MÃ©todo para pesquisar veÃ­culo atravÃ©s de seu cÃ³digo
 	public long pesquisarVeiculoPorCodigo(String codEstPesquisa) {	
-		// método para localizar um registro no arquivo em disco
-		long posicaoCursorArquivo = 0;
+		// mÃ©todo para localizar um registro no arquivo em disco
+		
 		try { 
 			RandomAccessFile arquivo = new RandomAccessFile("ESTACIONAMENTO.DAT", "rw");
 			while (true) {
-				posicaoCursorArquivo  = arquivo.getFilePointer();	// posição do início do registro no arquivo
+				posicaoRegistro  = arquivo.getFilePointer();	// posiÃ§Ã£o do inÃ­cio do registro no arquivo
 				ativo		 = arquivo.readChar();
 				codEst       = arquivo.readUTF();
 				placa        = arquivo.readUTF();
@@ -527,13 +671,13 @@ public class Estacionamento {
 
 				if ( codEstPesquisa.equalsIgnoreCase(codEst) && ativo == 'S') {
 					arquivo.close();
-					return posicaoCursorArquivo;
+					return posicaoRegistro;
 				}
 			}
 		}catch (EOFException e) {
-			return -1; // registro não foi encontrado
+			return -1; // registro nÃ£o foi encontrado
 		}catch (IOException e) { 
-			System.out.println("Erro na abertura do arquivo  -  programa será finalizado");
+			System.out.println("Erro na abertura do arquivo  -  programa serÃ¡ finalizado");
 			System.exit(0);
 			return -1;
 		}
@@ -594,9 +738,9 @@ public class Estacionamento {
 	}
 	
 
-	/******************** MÉTODOS DE CONSISTÊNCIA ********************/	
+	/******************** MÃ‰TODOS DE CONSISTÃŠNCIA ********************/	
 
-	//Método consitência de hora
+	//MÃ©todo consitÃªncia de hora
 	public static boolean consistirHora(String hora){
 		byte h;
 		byte min;
@@ -606,7 +750,9 @@ public class Estacionamento {
 		if(hora.charAt(2) != ':'){
 			valido = false;
 		}
-		if(hora.charAt(0) < '0' || hora.charAt(0) > '9'){
+		if(hora.charAt(0) < '0' || hora.charAt(0) > '2'){
+			valido = false;
+		}else if(hora.charAt(1) < '0' || hora.charAt(1) > '9'){
 			valido = false;
 		}else{
 			h = Byte.parseByte(hora.substring(0 , 2)); //pega a HORA
@@ -616,12 +762,12 @@ public class Estacionamento {
 			}else if(min < 0 || min > 59){
 				valido = false;
 			} //end if validar hora/minuto
-		} //end if validação
+		} //end if validaÃ§Ã£o
 
 		return valido;
 	}
 
-	//Método para consistir placa
+	//MÃ©todo para consistir placa
 	public static boolean consistirPlaca (String placaDigitada){
 		boolean placaValida = true;
 		if (placaDigitada.length() != 7){
@@ -646,7 +792,7 @@ public class Estacionamento {
 		return placaValida;
 	}
 
-	//Método consitência de categoria
+	//MÃ©todo consitÃªncia de categoria
 	public static String consistirCategoria (String categoriaDigitada){
 		String categoria="";
 		if (categoriaDigitada.equalsIgnoreCase("GI")){
@@ -664,7 +810,7 @@ public class Estacionamento {
 		return categoria;
 	}
 
-	//Método consistência data
+	//MÃ©todo consistÃªncia data
 	public static boolean consistirData (String data){
 		boolean dataOk = false;
 		
